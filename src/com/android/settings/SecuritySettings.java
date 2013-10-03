@@ -105,6 +105,9 @@ public class SecuritySettings extends SettingsPreferenceFragment
     private static final String KEY_APP_SECURITY_CATEGORY = "app_security";
     private static final String KEY_BLACKLIST = "blacklist";
 
+    // Omni Additions
+    private static final String BATTERY_AROUND_LOCKSCREEN_RING = "battery_around_lockscreen_ring";
+
     private PackageManager mPM;
     DevicePolicyManager mDPM;
 
@@ -143,6 +146,9 @@ public class SecuritySettings extends SettingsPreferenceFragment
     private CheckBoxPreference mLockBeforeUnlock;
     private ListPreference mSmsSecurityCheck;
     private PreferenceScreen mBlacklist;
+
+    // Omni Additions
+    private CheckBoxPreference mLockRingBattery;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -317,6 +323,12 @@ public class SecuritySettings extends SettingsPreferenceFragment
             mVibratePref = (CheckBoxPreference) findPreference(KEY_VIBRATE_PREF);
             mVibratePref.setChecked(Settings.System.getInt(resolver,
                     Settings.System.LOCKSCREEN_VIBRATE_ENABLED, 1) == 1);
+
+            // Add the additional Omni settings
+            mLockRingBattery = (CheckBoxPreference) root
+                    .findPreference(BATTERY_AROUND_LOCKSCREEN_RING);
+            mLockRingBattery.setChecked(Settings.System.getInt(resolver,
+                    Settings.System.BATTERY_AROUND_LOCKSCREEN_RING, 0) == 1);
 
             // disable lock options if lock screen set to NONE
             // or if using pattern as a primary lock screen or
@@ -793,6 +805,9 @@ public class SecuritySettings extends SettingsPreferenceFragment
         } else if (preference == mVibratePref) {
             Settings.System.putInt(getActivity().getApplicationContext().getContentResolver(),
                     Settings.System.LOCKSCREEN_VIBRATE_ENABLED, isToggled(preference) ? 1 : 0);
+        } else if (preference == mLockRingBattery) {
+            Settings.System.putInt(getActivity().getApplicationContext().getContentResolver(),
+                    Settings.System.BATTERY_AROUND_LOCKSCREEN_RING, isToggled(preference) ? 1 : 0);
         } else if (preference == mShowPassword) {
             Settings.System.putInt(getContentResolver(), Settings.System.TEXT_SHOW_PASSWORD,
                     mShowPassword.isChecked() ? 1 : 0);
